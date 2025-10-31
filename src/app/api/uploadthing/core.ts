@@ -68,7 +68,7 @@ export const ourFileRouter = {
     }),
     pdfUploader: f({
       pdf: {
-        maxFileSize: "4MB",
+        maxFileSize: "16MB",
         maxFileCount: 1,
       },
     })
