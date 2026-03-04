@@ -17,7 +17,7 @@ export default function Home() {
           
           <Link href="/video" className="p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
             <h2 className="text-xl font-semibold mb-2">Video Upload</h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Upload videos up to 16MB</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Upload videos up to 64MB</p>
           </Link>
           
           <Link href="/audio" className="p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">

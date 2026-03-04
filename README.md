@@ -3,7 +3,7 @@ Thanks to [uploadthing](https://uploadthing.com/).
 - Share files through public links
 - Support for multiple file types:
   - Images (up to 8MB)
-  - Videos (up to 16MB)
+  - Videos (up to 64MB)
   - Audio files (up to 4MB)
   - PDFs (up to 4MB)
   - Text files (up to 64KB)
