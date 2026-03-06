@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import { useRef, useState } from "react";
 import { type UploadKind, uploadKinds } from "~/lib/site-data";
 import { useUploadThing } from "~/utils/uploadthing";
@@ -73,9 +73,24 @@ function CopyButton({ value }: { value: string }) {
 
 function RouteLink({ href, children, className }: { href: string; children: React.ReactNode; className: string }) {
   return (
-    <Link href={href} prefetch={true} className={className}>
-      {children}
+    <Link href={href} prefetch={true} className={`${className} relative flex items-center justify-between gap-3`}>
+      <RouteLinkLabel>{children}</RouteLinkLabel>
     </Link>
+  );
+}
+
+function RouteLinkLabel({ children }: { children: React.ReactNode }) {
+  const { pending } = useLinkStatus();
+
+  return (
+    <>
+      <span>{children}</span>
+      <span
+        className={`h-2 w-2 rounded-full bg-[#d08b52] transition-opacity ${pending ? "opacity-100 animate-pulse" : "opacity-0"}`}
+        aria-hidden="true"
+      />
+      {pending ? <span className="absolute inset-x-3 bottom-0 h-px bg-[#d08b52]" aria-hidden="true" /> : null}
+    </>
   );
 }
 
@@ -197,12 +212,25 @@ function CustomUploader({ kind }: { kind: UploadKind }) {
                   type="button"
                   onClick={() => inputRef.current?.click()}
                   disabled={isUploading}
-                  className="inline-flex h-11 min-w-[152px] items-center justify-center rounded-[8px] bg-[#d08b52] px-5 text-sm font-medium text-[#171717] transition-colors hover:bg-[#e29d63] disabled:cursor-not-allowed disabled:bg-[#8d674a]"
+                  className="relative inline-flex h-11 min-w-[152px] items-center justify-center overflow-hidden rounded-[8px] bg-[#d08b52] px-5 text-sm font-medium text-[#171717] transition-colors hover:bg-[#e29d63] disabled:cursor-not-allowed disabled:bg-[#8d674a]"
                 >
-                  {isUploading ? `Uploading ${uploadProgress}%` : "Select file"}
+                  {isUploading ? (
+                    <span className="absolute inset-0 overflow-hidden">
+                      <span
+                        className="absolute inset-y-0 left-0 bg-[#f3d3b0]/55 transition-[width] duration-150 ease-linear"
+                        style={{ width: `${uploadProgress}%` }}
+                      />
+                    </span>
+                  ) : null}
+                  <span className="relative z-10">{isUploading ? `Uploading ${uploadProgress}%` : "Select file"}</span>
                 </button>
                 <span className="text-sm text-[#8f8478]">{kind.limit}</span>
               </div>
+              {isUploading ? (
+                <div className="mt-4 h-2 w-full max-w-[280px] overflow-hidden rounded-[999px] bg-[#312a24]">
+                  <div className="h-full bg-[#d08b52] transition-[width] duration-150 ease-linear" style={{ width: `${uploadProgress}%` }} />
+                </div>
+              ) : null}
               <p className="mt-6 min-h-[24px] text-sm text-[#b9ada0]">
                 {errorMessage ?? (pendingFile ? `${pendingFile.name} • ${formatFileSize(pendingFile.size)}` : `${kind.accept} • Automatic upload`)}
               </p>
