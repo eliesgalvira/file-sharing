@@ -1,5 +1,6 @@
-import { VersionedPage } from "~/components/versioned-page";
+import { UploadExperience } from "~/components/upload-experience";
+import { getUploadKind } from "~/lib/site-data";
 
 export default function ImagePage() {
-  return <VersionedPage design="1" slug="image" />;
+  return <UploadExperience kind={getUploadKind("image")} />;
 }

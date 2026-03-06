@@ -6,6 +6,7 @@ export const uploadKinds = [
     limit: "Up to 8 MB",
     endpoint: "imageUploader",
     accept: "Images",
+    acceptAttr: "image/png,image/jpeg,image/gif,image/webp",
   },
   {
     slug: "video",
@@ -14,6 +15,7 @@ export const uploadKinds = [
     limit: "Up to 64 MB",
     endpoint: "videoUploader",
     accept: "Videos",
+    acceptAttr: "video/mp4,video/quicktime,video/webm",
   },
   {
     slug: "audio",
@@ -22,6 +24,7 @@ export const uploadKinds = [
     limit: "Up to 64 MB",
     endpoint: "audioUploader",
     accept: "Audio files",
+    acceptAttr: "audio/mpeg,audio/wav,audio/x-wav,audio/mp4,audio/aac,audio/m4a",
   },
   {
     slug: "pdf",
@@ -30,6 +33,7 @@ export const uploadKinds = [
     limit: "Up to 16 MB",
     endpoint: "pdfUploader",
     accept: "PDF documents",
+    acceptAttr: "application/pdf",
   },
   {
     slug: "text",
@@ -38,6 +42,7 @@ export const uploadKinds = [
     limit: "Up to 64 KB",
     endpoint: "textUploader",
     accept: "Plain text files",
+    acceptAttr: ".txt,.md,.csv,.json,text/plain,text/markdown,text/csv,application/json",
   },
   {
     slug: "blob",
@@ -46,20 +51,17 @@ export const uploadKinds = [
     limit: "Up to 8 MB",
     endpoint: "blobUploader",
     accept: "Binary blobs",
+    acceptAttr: "",
   },
 ] as const;
 
 export type UploadSlug = (typeof uploadKinds)[number]["slug"];
 export type UploadKind = (typeof uploadKinds)[number];
-export type UploadEndpoint = (typeof uploadKinds)[number]["endpoint"];
-
-export const designIds = ["1", "2", "3"] as const;
-export type DesignId = (typeof designIds)[number];
 
 export function getUploadKind(slug?: string | null) {
-  return uploadKinds.find((kind) => kind.slug === slug);
-}
-
-export function isDesignId(value?: string | null): value is DesignId {
-  return designIds.includes(value as DesignId);
+  const kind = uploadKinds.find((entry) => entry.slug === slug);
+  if (!kind) {
+    throw new Error(`Unknown upload kind: ${slug}`);
+  }
+  return kind;
 }

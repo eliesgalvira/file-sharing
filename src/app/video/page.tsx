@@ -1,5 +1,6 @@
-import { VersionedPage } from "~/components/versioned-page";
+import { UploadExperience } from "~/components/upload-experience";
+import { getUploadKind } from "~/lib/site-data";
 
 export default function VideoPage() {
-  return <VersionedPage design="1" slug="video" />;
+  return <UploadExperience kind={getUploadKind("video")} />;
 }

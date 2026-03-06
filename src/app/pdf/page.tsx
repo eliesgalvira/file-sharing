@@ -1,5 +1,6 @@
-import { VersionedPage } from "~/components/versioned-page";
+import { UploadExperience } from "~/components/upload-experience";
+import { getUploadKind } from "~/lib/site-data";
 
 export default function PdfPage() {
-  return <VersionedPage design="1" slug="pdf" />;
+  return <UploadExperience kind={getUploadKind("pdf")} />;
 }
