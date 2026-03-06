@@ -3,24 +3,29 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
+    "dev": "next dev",
+    "build": "next build --webpack",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint ."
   },
   "dependencies": {
-    "@uploadthing/react": "7.3.0",
-    "next": "15.3.8",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "uploadthing": "7.6.0"
+    "@uploadthing/react": "7.3.3",
+    "next": "16.1.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "uploadthing": "7.7.4"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "4.1.4",
-    "@types/node": "22.14.1",
-    "@types/react": "19.1.2",
-    "@types/react-dom": "19.1.2",
-    "tailwindcss": "4.1.4",
-    "typescript": "5.8.3"
+    "@eslint/js": "10.0.1",
+    "@next/eslint-plugin-next": "16.1.6",
+    "@tailwindcss/postcss": "4.2.1",
+    "@types/node": "25.3.5",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "eslint": "10.0.2",
+    "globals": "17.4.0",
+    "tailwindcss": "4.2.1",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.56.1"
   }
 }
