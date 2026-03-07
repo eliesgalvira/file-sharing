@@ -1,6 +1,6 @@
-import { UploadExperience } from "~/components/upload-experience";
+import { UploadPageContent } from "~/components/upload-experience";
 import { getUploadKind } from "~/lib/site-data";
 
 export default function ImagePage() {
-  return <UploadExperience kind={getUploadKind("image")} />;
+  return <UploadPageContent kind={getUploadKind("image")} />;
 }

@@ -1,5 +1,5 @@
-import { UploadExperience } from "~/components/upload-experience";
+import { OverviewContent } from "~/components/overview-content";
 
 export function HomePage() {
-  return <UploadExperience />;
+  return <OverviewContent />;
 }

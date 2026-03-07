@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "~/app/api/uploadthing/core";
+import { AppShell } from "~/components/app-shell";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,7 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-        {children}
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );
