@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="File sharing icon">
+  <rect width="1024" height="1024" rx="240" fill="#1f1c19" />
+  <path
+    d="M388 812a84 84 0 0 1-84-84V296a84 84 0 0 1 84-84h288.352A100.8 100.8 0 0 1 747.92 241.651l150.144 150.144A100.8 100.8 0 0 1 927.648 463.36V728a84 84 0 0 1-84 84Z"
+    fill="none"
+    stroke="#f7efe5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="82"
+  />
+  <path
+    d="M724 212v224a42 42 0 0 0 42 42h161.648"
+    fill="none"
+    stroke="#f7efe5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="82"
+  />
+</svg>
