@@ -1,36 +1,49 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="File sharing social preview">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#171717" />
-      <stop offset="100%" stop-color="#26211d" />
+      <stop offset="0%" stop-color="#151413" />
+      <stop offset="55%" stop-color="#201d1a" />
+      <stop offset="100%" stop-color="#2a241f" />
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3a2f25" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#3a2f25" stop-opacity="0" />
     </linearGradient>
   </defs>
-  <rect width="1200" height="630" fill="url(#bg)" />
-  <circle cx="1050" cy="110" r="210" fill="#2f2924" opacity="0.8" />
-  <circle cx="160" cy="560" r="220" fill="#221f1a" opacity="0.9" />
-  <rect x="84" y="84" width="1032" height="462" rx="36" fill="#1f1c19" stroke="#3a332d" stroke-width="4" />
-  <rect x="132" y="132" width="156" height="156" rx="34" fill="#f3efe8" />
-  <path
-    d="M190 249a18 18 0 0 1-18-18V151a18 18 0 0 1 18-18h53.646a21.6 21.6 0 0 1 15.336 6.364l27.676 27.676A21.6 21.6 0 0 1 293 182.376V231a18 18 0 0 1-18 18z"
-    fill="none"
-    stroke="#171717"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    stroke-width="14"
-  />
-  <path
-    d="M245 133v41a9 9 0 0 0 9 9h39"
-    fill="none"
-    stroke="#171717"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    stroke-width="14"
-  />
-  <text x="340" y="206" fill="#f7efe5" font-family="system-ui, sans-serif" font-size="66" font-weight="700">File sharing</text>
-  <text x="340" y="268" fill="#b9ada0" font-family="system-ui, sans-serif" font-size="30">Simple public uploads, organized by file type.</text>
-  <rect x="132" y="344" width="936" height="140" rx="24" fill="#171717" stroke="#342e28" stroke-width="3" />
-  <rect x="168" y="380" width="240" height="68" rx="18" fill="#f3efe8" />
-  <text x="193" y="423" fill="#171717" font-family="system-ui, sans-serif" font-size="28" font-weight="700">Upload any supported file</text>
-  <text x="450" y="405" fill="#f7efe5" font-family="system-ui, sans-serif" font-size="28">Generate a public link for images, video, audio, PDFs, text, and blobs.</text>
-  <text x="450" y="445" fill="#b9ada0" font-family="system-ui, sans-serif" font-size="24">Ready for browser install prompts, mobile homescreens, and social link previews.</text>
+
+  <rect width="1200" height="630" rx="42" fill="url(#bg)" />
+  <circle cx="1020" cy="118" r="235" fill="url(#glow)" />
+  <circle cx="138" cy="578" r="170" fill="#1b1815" opacity="0.85" />
+
+  <rect x="78" y="78" width="1044" height="474" rx="34" fill="#1b1815" stroke="#3c342d" stroke-width="3" />
+
+  <rect x="138" y="146" width="156" height="156" rx="36" fill="#1f1c19" />
+  <g transform="translate(156 164) scale(5.25)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+    <path d="M14 2v5a1 1 0 0 0 1 1h5" />
+  </g>
+
+  <text x="344" y="212" fill="#f7efe5" font-family="system-ui, sans-serif" font-size="68" font-weight="700">File sharing</text>
+
+  <text x="344" y="278" fill="#c1b5a8" font-family="system-ui, sans-serif" font-size="32">
+    <tspan x="344" dy="0">Upload files and generate a public link</tspan>
+    <tspan x="344" dy="42">for sharing in a few seconds.</tspan>
+  </text>
+
+  <rect x="138" y="384" width="924" height="94" rx="22" fill="#171513" stroke="#322b25" stroke-width="3" />
+
+  <rect x="172" y="408" width="186" height="46" rx="14" fill="#f3efe8" />
+  <text x="205" y="439" fill="#171513" font-family="system-ui, sans-serif" font-size="25" font-weight="700">Images</text>
+
+  <rect x="378" y="408" width="146" height="46" rx="14" fill="#2b2621" />
+  <text x="412" y="439" fill="#f7efe5" font-family="system-ui, sans-serif" font-size="25" font-weight="600">Video</text>
+
+  <rect x="544" y="408" width="150" height="46" rx="14" fill="#2b2621" />
+  <text x="578" y="439" fill="#f7efe5" font-family="system-ui, sans-serif" font-size="25" font-weight="600">Audio</text>
+
+  <rect x="714" y="408" width="118" height="46" rx="14" fill="#2b2621" />
+  <text x="752" y="439" fill="#f7efe5" font-family="system-ui, sans-serif" font-size="25" font-weight="600">PDF</text>
+
+  <rect x="852" y="408" width="176" height="46" rx="14" fill="#2b2621" />
+  <text x="891" y="439" fill="#f7efe5" font-family="system-ui, sans-serif" font-size="25" font-weight="600">Text + Blob</text>
 </svg>
