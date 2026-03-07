@@ -9,6 +9,7 @@ type IntentLinkProps = {
   children: React.ReactNode;
   active?: boolean;
   showPending?: boolean;
+  align?: "center" | "start";
 };
 
 function PendingSpinner() {
@@ -29,12 +30,14 @@ export function IntentLink({
   children,
   active = false,
   showPending = true,
+  align = "center",
 }: IntentLinkProps) {
   const [armed, setArmed] = useState(false);
+  const alignmentClassName = align === "start" ? "items-start" : "items-center";
 
   if (active) {
     return (
-      <span aria-current="page" className={`${className} flex items-center justify-between gap-3`}>
+      <span aria-current="page" className={`${className} flex ${alignmentClassName} justify-between gap-3`}>
         <span>{children}</span>
         {showPending ? <span className="h-4 w-4" aria-hidden="true" /> : null}
       </span>
@@ -48,7 +51,7 @@ export function IntentLink({
       onMouseEnter={() => setArmed(true)}
       onFocus={() => setArmed(true)}
       onTouchStart={() => setArmed(true)}
-      className={`${className} flex items-center justify-between gap-3`}
+      className={`${className} flex ${alignmentClassName} justify-between gap-3`}
     >
       <span>{children}</span>
       {showPending ? <PendingSpinner /> : null}
