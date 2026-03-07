@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { IntentLink } from "~/components/intent-link";
 import { uploadKinds } from "~/lib/site-data";
 
 export function OverviewContent() {
@@ -19,9 +19,9 @@ export function OverviewContent() {
               {uploadKinds.map((entry) => (
                 <tr key={entry.slug} className="border-t border-[#36312c] align-top">
                   <td className="px-4 py-3">
-                    <Link href={`/${entry.slug}`} prefetch={true} className="underline underline-offset-2">
+                    <IntentLink href={`/${entry.slug}`} showPending={false} className="underline underline-offset-2">
                       {entry.title}
-                    </Link>
+                    </IntentLink>
                   </td>
                   <td className="px-4 py-3 text-[#b9ada0]">{entry.description}</td>
                   <td className="px-4 py-3 text-[#b9ada0]">{entry.limit}</td>
