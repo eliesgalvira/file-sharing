@@ -9,7 +9,7 @@ export const siteConfig = {
   backgroundColor: "#171717",
   foregroundColor: "#f7efe5",
   mutedColor: "#b9ada0",
-  ogImage: "/og-card.png",
+  ogImage: "/og-card-v3.png",
   keywords: [
     "file sharing",
     "public uploads",
