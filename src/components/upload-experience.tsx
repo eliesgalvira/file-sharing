@@ -16,7 +16,6 @@ type UploadInfoCardsProps = {
   errorMessage: string | null;
   statusMessage: string;
   uploadProgress: number;
-  uploadedUrl: string | null;
 };
 
 function formatFileSize(bytes: number) {
@@ -65,14 +64,36 @@ function CopyButton({ value }: { value: string }) {
         setCopied(true);
         window.setTimeout(() => setCopied(false), 1200);
       }}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-[8px] border border-[#5a5047] bg-[#221d19] text-[#f3efe8] transition-colors hover:border-[#7a6d61] hover:bg-[#2a241f]"
+      className="inline-flex h-11 items-center justify-center gap-2 rounded-[8px] border border-[#5a5047] bg-[#221d19] px-4 text-sm font-medium text-[#f3efe8] transition-colors hover:border-[#7a6d61] hover:bg-[#2a241f]"
       aria-label="Copy share link"
       title={copied ? "Copied" : "Copy link"}
     >
       <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 fill-current">
         <path d="M6.5 2.75A1.75 1.75 0 0 0 4.75 4.5v8c0 .967.784 1.75 1.75 1.75h6A1.75 1.75 0 0 0 14.25 12.5v-8a1.75 1.75 0 0 0-1.75-1.75h-6Zm-.25 1.75c0-.138.112-.25.25-.25h6c.138 0 .25.112.25.25v8a.25.25 0 0 1-.25.25h-6a.25.25 0 0 1-.25-.25v-8Zm10 3.5v7.5A1.75 1.75 0 0 1 14.5 17.25H8a1.75 1.75 0 0 1-1.75-1.75v-.5h1.5v.5c0 .138.112.25.25.25h6.5c.138 0 .25-.112.25-.25V8h1.5Z" />
       </svg>
+      <span>{copied ? "Copied" : "Copy link"}</span>
     </button>
+  );
+}
+
+function ShareLinkCard({ uploadedUrl }: { uploadedUrl: string }) {
+  return (
+    <section className="mt-4 rounded-[10px] border border-[#4a433d] bg-[#25211d] p-5">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h3 className="text-base font-semibold text-[#f7efe5]">Share link</h3>
+          <p className="mt-1 text-sm text-[#b9ada0]">
+            Your file is ready. Copy the public URL or open it in a new tab.
+          </p>
+        </div>
+        <CopyButton value={uploadedUrl} />
+      </div>
+      <div className="mt-4 rounded-[8px] border border-[#3d3630] bg-[#1e1a17] p-4 text-sm text-[#f3efe8]">
+        <a href={uploadedUrl} target="_blank" rel="noreferrer" className="break-all underline underline-offset-2">
+          {uploadedUrl}
+        </a>
+      </div>
+    </section>
   );
 }
 
@@ -83,7 +104,6 @@ function UploadInfoCards({
   errorMessage,
   statusMessage,
   uploadProgress,
-  uploadedUrl,
 }: UploadInfoCardsProps) {
   return (
     <div className="grid gap-4">
@@ -103,22 +123,6 @@ function UploadInfoCards({
             <dd className="mt-1 text-[#f3efe8]">{uploadProgress}%</dd>
           </div>
         </dl>
-      </section>
-
-      <section className="rounded-[10px] border border-[#4a433d] bg-[#25211d] p-5">
-        <div className="flex items-center justify-between gap-3">
-          <h3 className="text-base font-semibold text-[#f7efe5]">Share link</h3>
-          {uploadedUrl ? <CopyButton value={uploadedUrl} /> : null}
-        </div>
-        <div className="mt-4 rounded-[8px] border border-[#3d3630] bg-[#1e1a17] p-4 text-sm text-[#f3efe8]">
-          {uploadedUrl ? (
-            <a href={uploadedUrl} target="_blank" rel="noreferrer" className="break-all underline underline-offset-2">
-              {uploadedUrl}
-            </a>
-          ) : (
-            <span className="text-[#8f8478]">Your uploaded file URL will appear here.</span>
-          )}
-        </div>
       </section>
 
       <section className="rounded-[10px] border border-[#4a433d] bg-[#25211d] p-5">
@@ -296,6 +300,8 @@ export function UploadPageContent({ kind }: { kind: UploadKind }) {
         </div>
       </section>
 
+      {uploadedUrl ? <ShareLinkCard uploadedUrl={uploadedUrl} /> : null}
+
       {isInfoOpen ? (
         <section
           id="upload-info-panel"
@@ -309,7 +315,7 @@ export function UploadPageContent({ kind }: { kind: UploadKind }) {
                   Upload info
                 </h2>
                 <p className="mt-1 text-sm text-[#b9ada0]">
-                  Current state, share link, and route metadata.
+                  Current state and route metadata.
                 </p>
               </div>
               <button
@@ -329,7 +335,6 @@ export function UploadPageContent({ kind }: { kind: UploadKind }) {
               errorMessage={errorMessage}
               statusMessage={statusMessage}
               uploadProgress={uploadProgress}
-              uploadedUrl={uploadedUrl}
             />
           </div>
         </section>
