@@ -9,6 +9,16 @@ type PendingFile = {
   size: number;
 };
 
+type UploadInfoCardsProps = {
+  endpoint: string;
+  accept: string;
+  pendingFile: PendingFile | null;
+  errorMessage: string | null;
+  statusMessage: string;
+  uploadProgress: number;
+  uploadedUrl: string | null;
+};
+
 function formatFileSize(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
 
@@ -66,6 +76,72 @@ function CopyButton({ value }: { value: string }) {
   );
 }
 
+function UploadInfoCards({
+  endpoint,
+  accept,
+  pendingFile,
+  errorMessage,
+  statusMessage,
+  uploadProgress,
+  uploadedUrl,
+}: UploadInfoCardsProps) {
+  return (
+    <div className="grid gap-4">
+      <section className="rounded-[10px] border border-[#4a433d] bg-[#25211d] p-5">
+        <h3 className="text-base font-semibold text-[#f7efe5]">Current upload</h3>
+        <dl className="mt-4 grid gap-4 text-sm">
+          <div>
+            <dt className="text-[#b9ada0]">File</dt>
+            <dd className="mt-1 break-all text-[#f3efe8]">{pendingFile?.name ?? "No file selected"}</dd>
+          </div>
+          <div>
+            <dt className="text-[#b9ada0]">Status</dt>
+            <dd className="mt-1 text-[#f3efe8]">{errorMessage ?? statusMessage}</dd>
+          </div>
+          <div>
+            <dt className="text-[#b9ada0]">Progress</dt>
+            <dd className="mt-1 text-[#f3efe8]">{uploadProgress}%</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section className="rounded-[10px] border border-[#4a433d] bg-[#25211d] p-5">
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="text-base font-semibold text-[#f7efe5]">Share link</h3>
+          {uploadedUrl ? <CopyButton value={uploadedUrl} /> : null}
+        </div>
+        <div className="mt-4 rounded-[8px] border border-[#3d3630] bg-[#1e1a17] p-4 text-sm text-[#f3efe8]">
+          {uploadedUrl ? (
+            <a href={uploadedUrl} target="_blank" rel="noreferrer" className="break-all underline underline-offset-2">
+              {uploadedUrl}
+            </a>
+          ) : (
+            <span className="text-[#8f8478]">Your uploaded file URL will appear here.</span>
+          )}
+        </div>
+      </section>
+
+      <section className="rounded-[10px] border border-[#4a433d] bg-[#25211d] p-5">
+        <h3 className="text-base font-semibold text-[#f7efe5]">Route details</h3>
+        <dl className="mt-4 grid gap-4 text-sm">
+          <div>
+            <dt className="text-[#b9ada0]">Accepted content</dt>
+            <dd className="mt-1 text-[#f3efe8]">{accept}</dd>
+          </div>
+          <div>
+            <dt className="text-[#b9ada0]">Endpoint</dt>
+            <dd className="mt-1 font-mono text-xs text-[#f3efe8]">{endpoint}</dd>
+          </div>
+          <div>
+            <dt className="text-[#b9ada0]">Upload mode</dt>
+            <dd className="mt-1 text-[#f3efe8]">Automatic after selection or drop</dd>
+          </div>
+        </dl>
+      </section>
+    </div>
+  );
+}
+
 export function UploadPageContent({ kind }: { kind: UploadKind }) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [pendingFile, setPendingFile] = useState<PendingFile | null>(null);
@@ -74,6 +150,7 @@ export function UploadPageContent({ kind }: { kind: UploadKind }) {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   const { startUpload, isUploading } = useUploadThing(kind.endpoint, {
     uploadProgressGranularity: "fine",
@@ -121,145 +198,142 @@ export function UploadPageContent({ kind }: { kind: UploadKind }) {
 
   return (
     <div className="grid gap-6">
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">
-        <section className="rounded-[10px] border border-[#36312c] bg-[#1f1c19] p-5 sm:p-6">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <h2 className="text-2xl font-semibold text-[#f7efe5]">{kind.title} upload</h2>
-              <p className="mt-2 text-sm text-[#b9ada0]">{kind.description}</p>
-            </div>
+      <section className="rounded-[10px] border border-[#36312c] bg-[#1f1c19] p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-semibold text-[#f7efe5]">{kind.title} upload</h2>
+            <p className="mt-2 text-sm text-[#b9ada0]">{kind.description}</p>
+          </div>
+          <div className="flex flex-wrap items-center justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => setIsInfoOpen((current) => !current)}
+              className="inline-flex h-10 items-center gap-2 rounded-[8px] border border-[#4a433d] bg-[#25211d] px-3 text-sm text-[#f3efe8] transition-colors hover:border-[#6a6057] hover:bg-[#2b2621]"
+              aria-expanded={isInfoOpen}
+              aria-controls="upload-info-panel"
+            >
+              <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 fill-current text-[#d08b52]">
+                <path d="M10 1.75a8.25 8.25 0 1 0 0 16.5 8.25 8.25 0 0 0 0-16.5ZM8.875 7a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm.375 3h1.5v4h-1.5v-4Z" />
+              </svg>
+              {isInfoOpen ? "Hide info" : "Upload info"}
+            </button>
             <div className="rounded-[8px] border border-[#4a433d] bg-[#25211d] px-3 py-2 text-sm text-[#d08b52]">
               {kind.limit}
             </div>
           </div>
+        </div>
 
-          <div className="mt-6">
-            <input
-              ref={inputRef}
-              type="file"
-              accept={kind.acceptAttr}
-              className="hidden"
-              onChange={(event) => {
-                void queueFile(event.target.files?.[0] ?? null);
-                event.target.value = "";
-              }}
-            />
+        <div className="mt-6">
+          <input
+            ref={inputRef}
+            type="file"
+            accept={kind.acceptAttr}
+            className="hidden"
+            onChange={(event) => {
+              void queueFile(event.target.files?.[0] ?? null);
+              event.target.value = "";
+            }}
+          />
 
-            <div
-              onDragEnter={(event) => {
-                event.preventDefault();
-                setIsDragging(true);
-              }}
-              onDragOver={(event) => {
-                event.preventDefault();
-                setIsDragging(true);
-              }}
-              onDragLeave={(event) => {
-                event.preventDefault();
-                if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
-                setIsDragging(false);
-              }}
-              onDrop={(event) => {
-                event.preventDefault();
-                setIsDragging(false);
-                void queueFile(event.dataTransfer.files?.[0] ?? null);
-              }}
-              className={`rounded-[10px] border border-dashed px-5 py-8 sm:px-8 sm:py-10 transition-colors ${
-                isDragging
-                  ? "border-[#d08b52] bg-[#231d18]"
-                  : "border-[#6f5a45] bg-[#1b1815]"
-              }`}
-            >
-              <div className="flex min-h-[250px] flex-col items-center justify-center text-center">
-                <div className="flex h-14 w-14 items-center justify-center rounded-[10px] border border-[#5a5047] bg-[#221d19] text-[#d08b52]">
-                  <svg aria-hidden="true" viewBox="0 0 20 20" className="h-6 w-6 fill-current">
-                    <path d="M10 2.5 5.5 7h2.75v5.75h3.5V7h2.75L10 2.5Zm-6 11.75v2.25h12v-2.25h1.5V18H2.5v-3.75H4Z" />
-                  </svg>
-                </div>
-                <h3 className="mt-6 text-2xl font-semibold text-[#f7efe5]">Drop a file here</h3>
-                <p className="mt-2 max-w-md text-sm leading-6 text-[#b9ada0]">
-                  Upload one {kind.title.toLowerCase()} file and get a public link immediately. The route accepts {kind.accept.toLowerCase()}.
-                </p>
-                <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => inputRef.current?.click()}
-                    disabled={isUploading}
-                    className="relative inline-flex h-11 min-w-[168px] items-center justify-center overflow-hidden rounded-[8px] bg-[#d08b52] px-5 text-sm font-medium text-[#171717] transition-colors hover:bg-[#e29d63] disabled:cursor-not-allowed disabled:bg-[#8d674a]"
-                  >
-                    {isUploading ? (
-                      <span
-                        className="absolute inset-y-0 left-0 bg-[#f2d1ad]/55 transition-[width] duration-150 ease-linear"
-                        style={{ width: `${uploadProgress}%` }}
-                        aria-hidden="true"
-                      />
-                    ) : null}
-                    <span className="relative z-10">{isUploading ? `Uploading ${uploadProgress}%` : "Select file"}</span>
-                  </button>
-                  <span className="text-sm text-[#8f8478]">{kind.limit}</span>
-                </div>
-                <p className="mt-6 min-h-[24px] max-w-full break-all text-sm text-[#b9ada0]">
-                  {errorMessage ?? (pendingFile ? `${pendingFile.name} • ${formatFileSize(pendingFile.size)}` : `${kind.accept} • Automatic upload`)}
-                </p>
+          <div
+            onDragEnter={(event) => {
+              event.preventDefault();
+              setIsDragging(true);
+            }}
+            onDragOver={(event) => {
+              event.preventDefault();
+              setIsDragging(true);
+            }}
+            onDragLeave={(event) => {
+              event.preventDefault();
+              if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
+              setIsDragging(false);
+            }}
+            onDrop={(event) => {
+              event.preventDefault();
+              setIsDragging(false);
+              void queueFile(event.dataTransfer.files?.[0] ?? null);
+            }}
+            className={`rounded-[10px] border border-dashed px-5 py-8 sm:px-8 sm:py-10 transition-colors ${
+              isDragging
+                ? "border-[#d08b52] bg-[#231d18]"
+                : "border-[#6f5a45] bg-[#1b1815]"
+            }`}
+          >
+            <div className="flex min-h-[250px] flex-col items-center justify-center text-center">
+              <div className="flex h-14 w-14 items-center justify-center rounded-[10px] border border-[#5a5047] bg-[#221d19] text-[#d08b52]">
+                <svg aria-hidden="true" viewBox="0 0 20 20" className="h-6 w-6 fill-current">
+                  <path d="M10 2.5 5.5 7h2.75v5.75h3.5V7h2.75L10 2.5Zm-6 11.75v2.25h12v-2.25h1.5V18H2.5v-3.75H4Z" />
+                </svg>
               </div>
+              <h3 className="mt-6 text-2xl font-semibold text-[#f7efe5]">Drop a file here</h3>
+              <p className="mt-2 max-w-md text-sm leading-6 text-[#b9ada0]">
+                Upload one {kind.title.toLowerCase()} file and get a public link immediately. The route accepts {kind.accept.toLowerCase()}.
+              </p>
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => inputRef.current?.click()}
+                  disabled={isUploading}
+                  className="relative inline-flex h-11 min-w-[168px] items-center justify-center overflow-hidden rounded-[8px] bg-[#d08b52] px-5 text-sm font-medium text-[#171717] transition-colors hover:bg-[#e29d63] disabled:cursor-not-allowed disabled:bg-[#8d674a]"
+                >
+                  {isUploading ? (
+                    <span
+                      className="absolute inset-y-0 left-0 bg-[#f2d1ad]/55 transition-[width] duration-150 ease-linear"
+                      style={{ width: `${uploadProgress}%` }}
+                      aria-hidden="true"
+                    />
+                  ) : null}
+                  <span className="relative z-10">{isUploading ? `Uploading ${uploadProgress}%` : "Select file"}</span>
+                </button>
+                <span className="text-sm text-[#8f8478]">{kind.limit}</span>
+              </div>
+              <p className="mt-6 min-h-[24px] max-w-full break-all text-sm text-[#b9ada0]">
+                {errorMessage ?? (pendingFile ? `${pendingFile.name} • ${formatFileSize(pendingFile.size)}` : `${kind.accept} • Automatic upload`)}
+              </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {isInfoOpen ? (
+        <section
+          id="upload-info-panel"
+          aria-labelledby="upload-info-title"
+          className="rounded-[10px] border border-[#4a433d] bg-[#1a1714]"
+        >
+          <div className="border-b border-[#36312c] px-5 py-4">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 id="upload-info-title" className="text-lg font-semibold text-[#f7efe5]">
+                  Upload info
+                </h2>
+                <p className="mt-1 text-sm text-[#b9ada0]">
+                  Current state, share link, and route metadata.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsInfoOpen(false)}
+                className="inline-flex h-9 items-center rounded-[8px] border border-[#4a433d] bg-[#25211d] px-3 text-sm text-[#f3efe8] transition-colors hover:border-[#6a6057] hover:bg-[#2b2621]"
+              >
+                Hide
+              </button>
+            </div>
+          </div>
+          <div className="p-5">
+            <UploadInfoCards
+              endpoint={kind.endpoint}
+              accept={kind.accept}
+              pendingFile={pendingFile}
+              errorMessage={errorMessage}
+              statusMessage={statusMessage}
+              uploadProgress={uploadProgress}
+              uploadedUrl={uploadedUrl}
+            />
+          </div>
         </section>
-
-        <aside className="grid gap-6">
-          <section className="rounded-[10px] border border-[#4a433d] bg-[#25211d] p-5">
-            <h3 className="text-base font-semibold text-[#f7efe5]">Current upload</h3>
-            <dl className="mt-4 grid gap-4 text-sm">
-              <div>
-                <dt className="text-[#b9ada0]">File</dt>
-                <dd className="mt-1 break-all text-[#f3efe8]">{pendingFile?.name ?? "No file selected"}</dd>
-              </div>
-              <div>
-                <dt className="text-[#b9ada0]">Status</dt>
-                <dd className="mt-1 text-[#f3efe8]">{errorMessage ?? statusMessage}</dd>
-              </div>
-              <div>
-                <dt className="text-[#b9ada0]">Progress</dt>
-                <dd className="mt-1 text-[#f3efe8]">{uploadProgress}%</dd>
-              </div>
-            </dl>
-          </section>
-
-          <section className="rounded-[10px] border border-[#4a433d] bg-[#25211d] p-5">
-            <div className="flex items-center justify-between gap-3">
-              <h3 className="text-base font-semibold text-[#f7efe5]">Share link</h3>
-              {uploadedUrl ? <CopyButton value={uploadedUrl} /> : null}
-            </div>
-            <div className="mt-4 rounded-[8px] border border-[#3d3630] bg-[#1e1a17] p-4 text-sm text-[#f3efe8]">
-              {uploadedUrl ? (
-                <a href={uploadedUrl} target="_blank" rel="noreferrer" className="break-all underline underline-offset-2">
-                  {uploadedUrl}
-                </a>
-              ) : (
-                <span className="text-[#8f8478]">Your uploaded file URL will appear here.</span>
-              )}
-            </div>
-          </section>
-
-          <section className="rounded-[10px] border border-[#4a433d] bg-[#25211d] p-5">
-            <h3 className="text-base font-semibold text-[#f7efe5]">Route details</h3>
-            <dl className="mt-4 grid gap-4 text-sm">
-              <div>
-                <dt className="text-[#b9ada0]">Accepted content</dt>
-                <dd className="mt-1 text-[#f3efe8]">{kind.accept}</dd>
-              </div>
-              <div>
-                <dt className="text-[#b9ada0]">Endpoint</dt>
-                <dd className="mt-1 font-mono text-xs text-[#f3efe8]">{kind.endpoint}</dd>
-              </div>
-              <div>
-                <dt className="text-[#b9ada0]">Upload mode</dt>
-                <dd className="mt-1 text-[#f3efe8]">Automatic after selection or drop</dd>
-              </div>
-            </dl>
-          </section>
-        </aside>
-      </div>
+      ) : null}
 
       <section className="rounded-[10px] border border-[#36312c] bg-[#1f1c19] p-5 sm:p-6">
         <h2 className="text-base font-semibold text-[#f7efe5]">Service notes</h2>

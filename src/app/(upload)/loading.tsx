@@ -7,7 +7,10 @@ export default function Loading() {
             <div className="h-8 w-40 animate-pulse rounded-[8px] bg-[#26211d] sm:w-48" />
             <div className="h-5 w-52 max-w-full animate-pulse rounded-[8px] bg-[#26211d] sm:w-72" />
           </div>
-          <div className="h-10 w-24 animate-pulse rounded-[8px] border border-[#4a433d] bg-[#25211d] sm:w-28" />
+          <div className="flex gap-3">
+            <div className="h-10 w-28 animate-pulse rounded-[8px] border border-[#4a433d] bg-[#25211d] sm:w-32" />
+            <div className="h-10 w-24 animate-pulse rounded-[8px] border border-[#4a433d] bg-[#25211d] sm:w-28" />
+          </div>
         </div>
 
         <div className="mt-6 rounded-[10px] border border-dashed border-[#6f5a45] bg-[#1b1815] px-5 py-8 sm:px-8 sm:py-10">
@@ -21,17 +24,16 @@ export default function Loading() {
         </div>
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[300px_300px_1fr]">
-        {Array.from({ length: 3 }).map((_, index) => (
-          <div key={index} className="rounded-[10px] border border-[#4a433d] bg-[#25211d] p-5">
-            <div className="h-5 w-28 animate-pulse rounded-[8px] bg-[#2e2823]" />
-            <div className="mt-4 space-y-3">
-              <div className="h-4 w-full animate-pulse rounded-[8px] bg-[#2e2823]" />
-              <div className="h-4 w-4/5 animate-pulse rounded-[8px] bg-[#2e2823]" />
-              <div className="h-4 w-3/5 animate-pulse rounded-[8px] bg-[#2e2823]" />
+      <section className="rounded-[10px] border border-[#36312c] bg-[#1f1c19] p-5 sm:p-6">
+        <div className="h-5 w-28 animate-pulse rounded-[8px] bg-[#26211d]" />
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div key={index} className="rounded-[8px] border border-[#4a433d] bg-[#25211d] p-3">
+              <div className="h-4 w-16 animate-pulse rounded-[8px] bg-[#2e2823]" />
+              <div className="mt-2 h-5 w-28 animate-pulse rounded-[8px] bg-[#2e2823]" />
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </section>
     </div>
   );
