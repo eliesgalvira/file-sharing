@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { IntentLink } from "~/components/intent-link";
-import { uploadKinds } from "~/lib/site-data";
+import { uploadKinds } from "~/modules/uploads";
 
 export function ShellSidebarNav() {
   const pathname = usePathname();

@@ -1,57 +1,24 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { type UploadKind } from "~/lib/site-data";
-import { useUploadThing } from "~/utils/uploadthing";
-
-type PendingFile = {
-  name: string;
-  size: number;
-};
+import { Effect } from "effect";
+import {
+  formatFileSize,
+  type PendingUploadFile,
+  type UploadKind,
+  UnsupportedFileTypeError,
+  useUploadThing,
+  validateSelectedFile,
+} from "~/modules/uploads";
 
 type UploadInfoCardsProps = {
   endpoint: string;
   accept: string;
-  pendingFile: PendingFile | null;
+  pendingFile: PendingUploadFile | null;
   errorMessage: string | null;
   statusMessage: string;
   uploadProgress: number;
 };
-
-function formatFileSize(bytes: number) {
-  if (bytes < 1024) return `${bytes} B`;
-
-  const units = ["KB", "MB", "GB"];
-  let size = bytes / 1024;
-  let unitIndex = 0;
-
-  while (size >= 1024 && unitIndex < units.length - 1) {
-    size /= 1024;
-    unitIndex += 1;
-  }
-
-  return `${size.toFixed(size >= 10 ? 0 : 1)} ${units[unitIndex]}`;
-}
-
-function isAcceptedFile(file: File, kind: UploadKind) {
-  if (!kind.acceptAttr) {
-    return true;
-  }
-
-  const accepted = kind.acceptAttr.split(",").map((value) => value.trim()).filter(Boolean);
-
-  return accepted.some((rule) => {
-    if (rule.startsWith(".")) {
-      return file.name.toLowerCase().endsWith(rule.toLowerCase());
-    }
-
-    if (rule.endsWith("/*")) {
-      return file.type.startsWith(rule.slice(0, -1));
-    }
-
-    return file.type === rule;
-  });
-}
 
 function CopyButton({ value }: { value: string }) {
   const [copied, setCopied] = useState(false);
@@ -148,7 +115,7 @@ function UploadInfoCards({
 
 export function UploadPageContent({ kind }: { kind: UploadKind }) {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [pendingFile, setPendingFile] = useState<PendingFile | null>(null);
+  const [pendingFile, setPendingFile] = useState<PendingUploadFile | null>(null);
   const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState("Waiting for a file");
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -183,21 +150,25 @@ export function UploadPageContent({ kind }: { kind: UploadKind }) {
   async function queueFile(file: File | null) {
     if (!file || isUploading) return;
 
-    if (!isAcceptedFile(file, kind)) {
+    try {
+      const nextPendingFile = await Effect.runPromise(validateSelectedFile(file, kind));
+      setPendingFile(nextPendingFile);
+      setUploadedUrl(null);
+      setErrorMessage(null);
+      setStatusMessage("Preparing upload");
+      setUploadProgress(0);
+      await startUpload([file]);
+    } catch (error) {
       setPendingFile(null);
       setUploadedUrl(null);
       setUploadProgress(0);
-      setStatusMessage("Unsupported file type");
-      setErrorMessage(`This route only accepts ${kind.accept.toLowerCase()}.`);
-      return;
+      setStatusMessage("Upload blocked");
+      setErrorMessage(
+        error instanceof UnsupportedFileTypeError
+          ? `This route only accepts ${kind.accept.toLowerCase()}.`
+          : "The upload could not be prepared.",
+      );
     }
-
-    setPendingFile({ name: file.name, size: file.size });
-    setUploadedUrl(null);
-    setErrorMessage(null);
-    setStatusMessage("Preparing upload");
-    setUploadProgress(0);
-    await startUpload([file]);
   }
 
   return (

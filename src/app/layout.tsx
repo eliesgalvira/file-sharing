@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
-import { ourFileRouter } from "~/app/api/uploadthing/core";
 import { AppShell } from "~/components/app-shell";
 import { getSiteUrl, siteConfig } from "~/lib/site-metadata";
+import { ourFileRouter } from "~/modules/uploads/server";
 import "./globals.css";
 
 const siteUrl = getSiteUrl();
