@@ -3,6 +3,7 @@ import { Effect, Match, Schema } from "effect";
 import type { UploadKind } from "./catalog";
 import { UploadSlug } from "./catalog";
 import type { OurFileRouter } from "./server";
+import type { UploadRouteErrorData } from "./server";
 
 export class PendingUploadFile extends Schema.Class("PendingUploadFile")({
   name: Schema.String,
@@ -76,6 +77,29 @@ export function formatFileSize(bytes: number) {
 
       return `${size.toFixed(size >= 10 ? 0 : 1)} ${units[unitIndex]}`;
     }),
+  );
+}
+
+export function getUploadErrorMessage(error: {
+  readonly message: string;
+  readonly data: UploadRouteErrorData | undefined;
+}) {
+  const details = error.data?.details?.trim();
+
+  return Match.value(error.data?.reason).pipe(
+    Match.when(
+      "authorization",
+      () => details ?? "You must be signed in before uploading files.",
+    ),
+    Match.when(
+      "completion",
+      () => details ?? "The file uploaded, but the server could not finish processing it.",
+    ),
+    Match.when(
+      "internal",
+      () => details ?? "An unexpected upload error occurred.",
+    ),
+    Match.orElse(() => error.message),
   );
 }
 

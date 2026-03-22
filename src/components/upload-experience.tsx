@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { Effect } from "effect";
 import {
   formatFileSize,
+  getUploadErrorMessage,
   type PendingUploadFile,
   type UploadKind,
   UnsupportedFileTypeError,
@@ -143,7 +144,7 @@ export function UploadPageContent({ kind }: { kind: UploadKind }) {
     onUploadError: (error) => {
       setUploadProgress(0);
       setStatusMessage("Upload failed");
-      setErrorMessage(error.message);
+      setErrorMessage(getUploadErrorMessage(error));
     },
   });
 

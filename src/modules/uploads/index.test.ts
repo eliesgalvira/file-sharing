@@ -3,6 +3,7 @@ import { Effect } from "effect";
 import {
   UnsupportedFileTypeError,
   formatFileSize,
+  getUploadErrorMessage,
   getUploadKind,
   uploadKinds,
   validateSelectedFile,
@@ -33,5 +34,21 @@ describe("uploads module", () => {
     await expect(
       Effect.runPromise(validateSelectedFile(file, getUploadKind("image"))),
     ).rejects.toBeInstanceOf(UnsupportedFileTypeError);
+  });
+
+  test("formats structured uploadthing authorization errors for the UI", () => {
+    expect(
+      getUploadErrorMessage({
+        message: "Failed to run middleware",
+        data: {
+          code: "FORBIDDEN",
+          reason: "authorization",
+          route: "image",
+          fileKey: null,
+          details: "The upload route could not resolve a user identity.",
+          causeTag: "UploadAuthorizationError",
+        },
+      }),
+    ).toBe("The upload route could not resolve a user identity.");
   });
 });
