@@ -1,4 +1,4 @@
-import { Effect, Match, Schema } from "effect";
+import { Effect, Match, Schema } from "effect-beta";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 import { uploadKinds, type UploadKind } from "./catalog";

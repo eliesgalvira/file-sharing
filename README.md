@@ -19,7 +19,8 @@ Thanks to [uploadthing](https://uploadthing.com/).
 ## Tooling
 
 - Package manager: `bun`
-- Runtime Effect dependency: `effect@beta`
+- Runtime Effect dependency for app code: `effect-beta` (aliased from `effect@beta`)
+- Runtime Effect dependency for UploadThing compatibility: `effect@3.17.7`
 - Effect language service: `@effect/language-service`
 
 ## Commands

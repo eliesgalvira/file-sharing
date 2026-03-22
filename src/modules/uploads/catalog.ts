@@ -1,4 +1,4 @@
-import { Effect, Schema as S } from "effect";
+import { Effect, Schema as S } from "effect-beta";
 
 export const UploadSlug = S.Literals(["image", "video", "audio", "pdf", "text", "blob"]);
 export type UploadSlug = typeof UploadSlug.Type;

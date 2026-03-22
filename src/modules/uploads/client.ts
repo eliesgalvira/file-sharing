@@ -1,5 +1,5 @@
 import { generateReactHelpers } from "@uploadthing/react";
-import { Effect, Match, Schema } from "effect";
+import { Effect, Match, Schema } from "effect-beta";
 import type { UploadKind } from "./catalog";
 import { UploadSlug } from "./catalog";
 import type { OurFileRouter } from "./server";

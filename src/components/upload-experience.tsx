@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Effect } from "effect";
+import { Effect } from "effect-beta";
 import {
   formatFileSize,
   getUploadErrorMessage,

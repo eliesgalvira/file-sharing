@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "@uploadthing/react": "7.3.3",
-    "effect": "^4.0.0-beta.36",
+    "effect": "3.17.7",
+    "effect-beta": "^4.0.0-beta.36",
     "next": "16.1.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",

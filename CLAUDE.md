@@ -11,6 +11,14 @@ Topics: quick-start, project-setup, tsconfig, basics, services-and-layers, data-
 
 Never guess at Effect patterns - check the guide first.
 
+## Repository Note
+
+`uploadthing` depends on `effect@3`, so this repository keeps:
+- `effect` for UploadThing compatibility
+- `effect-beta` (npm alias to `effect@beta`) for application Effect code
+
+When editing app code, import from `effect-beta`, not `effect`.
+
 ## Local Effect Source
 
 The Effect v4 repository is cloned to `~/.local/share/effect-solutions/effect` for reference.
