@@ -134,20 +134,23 @@ export function getUploadErrorMessage(error: {
   readonly data: UploadRouteErrorData | undefined;
 }) {
   const details = error.data?.details?.trim();
+  const formattedMessage = error.data?.message?.trim();
+  const causeMessage = error.data?.causeMessage?.trim();
   const normalizedMessage = error.message.toLowerCase();
 
   return Match.value(error.data?.reason).pipe(
     Match.when(
       "authorization",
-      () => details ?? "You must be signed in before uploading files.",
+      () => details ?? formattedMessage ?? "You must be signed in before uploading files.",
     ),
     Match.when(
       "completion",
-      () => details ?? "The file uploaded, but the server could not finish processing it.",
+      () =>
+        details ?? causeMessage ?? formattedMessage ?? "The file uploaded, but the server could not finish processing it.",
     ),
     Match.when(
       "internal",
-      () => details ?? "An unexpected upload error occurred.",
+      () => details ?? causeMessage ?? formattedMessage ?? "An unexpected upload error occurred.",
     ),
     Match.orElse(() =>
       Match.value(true).pipe(
@@ -163,6 +166,10 @@ export function getUploadErrorMessage(error: {
             normalizedMessage.includes("invalidfiletype") ||
             normalizedMessage.includes("not allowed"),
           () => "This file type is not allowed on this route.",
+        ),
+        Match.when(
+          () => error.message === error.message.toUpperCase() && error.message.includes("_"),
+          () => formattedMessage ?? causeMessage ?? "The upload provider rejected this file.",
         ),
         Match.orElse(() => error.message),
       ),
