@@ -6,6 +6,7 @@ import {
   FileTooLargeError,
   formatFileSize,
   getUploadErrorMessage,
+  normalizeFileForUpload,
   type PendingUploadFile,
   type UploadKind,
   UnsupportedFileTypeError,
@@ -153,13 +154,14 @@ export function UploadPageContent({ kind }: { kind: UploadKind }) {
     if (!file || isUploading) return;
 
     try {
-      const nextPendingFile = await Effect.runPromise(validateSelectedFile(file, kind));
+      const uploadFile = normalizeFileForUpload(file, kind);
+      const nextPendingFile = await Effect.runPromise(validateSelectedFile(uploadFile, kind));
       setPendingFile(nextPendingFile);
       setUploadedUrl(null);
       setErrorMessage(null);
       setStatusMessage("Preparing upload");
       setUploadProgress(0);
-      await startUpload([file]);
+      await startUpload([uploadFile]);
     } catch (error) {
       setPendingFile(null);
       setUploadedUrl(null);
