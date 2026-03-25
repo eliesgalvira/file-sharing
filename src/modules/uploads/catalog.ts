@@ -101,13 +101,13 @@ export const uploadKinds = [
   {
     slug: "blob",
     title: "Blob",
-    description: "Generic binary data",
-    limit: "Up to 8 MB",
+    description: "Generic binary data, including packet captures",
+    limit: "Up to 64 MB",
     endpoint: "blobUploader",
     accept: "Binary blobs",
     acceptAttr: "",
     fileType: "blob",
-    maxFileSize: "8MB",
+    maxFileSize: "64MB",
     maxFileCount: 1,
   },
 ] as const satisfies readonly UploadKind[];

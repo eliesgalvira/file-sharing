@@ -20,11 +20,39 @@ export class UnsupportedFileTypeError extends Schema.TaggedErrorClass("Unsupport
   },
 ) {}
 
+export class FileTooLargeError extends Schema.TaggedErrorClass("FileTooLargeError")(
+  "FileTooLargeError",
+  {
+    slug: UploadSlug,
+    fileName: Schema.String,
+    fileSize: Schema.Number,
+    maxFileSize: Schema.String,
+  },
+) {}
+
 const splitAcceptRules = (acceptAttr: string) =>
   acceptAttr
     .split(",")
     .map((value) => value.trim())
     .filter(Boolean);
+
+const fileSizeUnitToBytes = {
+  B: 1,
+  KB: 1024,
+  MB: 1024 * 1024,
+  GB: 1024 * 1024 * 1024,
+} as const;
+
+const parseFileSizeToBytes = (value: string) => {
+  const match = value.trim().match(/^(\d+(?:\.\d+)?)\s*(B|KB|MB|GB)$/i);
+
+  if (!match) {
+    return Number.POSITIVE_INFINITY;
+  }
+
+  const [, amount, unit] = match;
+  return Number(amount) * fileSizeUnitToBytes[unit.toUpperCase() as keyof typeof fileSizeUnitToBytes];
+};
 
 const matchesRule = (file: File, rule: string) =>
   Match.value(rule).pipe(
@@ -53,6 +81,17 @@ export const validateSelectedFile = Effect.fn("UploadClient.validateSelectedFile
       accept: kind.accept,
       fileName: file.name,
       mimeType: file.type,
+    });
+  }
+
+  const maxFileSizeInBytes = parseFileSizeToBytes(kind.maxFileSize);
+
+  if (file.size > maxFileSizeInBytes) {
+    return yield* new FileTooLargeError({
+      slug: kind.slug,
+      fileName: file.name,
+      fileSize: file.size,
+      maxFileSize: kind.maxFileSize,
     });
   }
 
@@ -85,6 +124,7 @@ export function getUploadErrorMessage(error: {
   readonly data: UploadRouteErrorData | undefined;
 }) {
   const details = error.data?.details?.trim();
+  const normalizedMessage = error.message.toLowerCase();
 
   return Match.value(error.data?.reason).pipe(
     Match.when(
@@ -99,7 +139,24 @@ export function getUploadErrorMessage(error: {
       "internal",
       () => details ?? "An unexpected upload error occurred.",
     ),
-    Match.orElse(() => error.message),
+    Match.orElse(() =>
+      Match.value(true).pipe(
+        Match.when(
+          () =>
+            normalizedMessage.includes("filesizemismatch") ||
+            normalizedMessage.includes("file size") ||
+            normalizedMessage.includes("too large"),
+          () => "The selected file exceeds this route's size limit.",
+        ),
+        Match.when(
+          () =>
+            normalizedMessage.includes("invalidfiletype") ||
+            normalizedMessage.includes("not allowed"),
+          () => "This file type is not allowed on this route.",
+        ),
+        Match.orElse(() => error.message),
+      ),
+    ),
   );
 }
 
