@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { Effect } from "effect-beta";
 import {
+  FileTooLargeError,
   UnsupportedFileTypeError,
   formatFileSize,
   getUploadErrorMessage,
@@ -36,6 +37,16 @@ describe("uploads module", () => {
     ).rejects.toBeInstanceOf(UnsupportedFileTypeError);
   });
 
+  test("rejects files that exceed the configured route size", async () => {
+    const file = new File([new Uint8Array(70 * 1024 * 1024)], "capture.pcapng", {
+      type: "application/octet-stream",
+    });
+
+    await expect(
+      Effect.runPromise(validateSelectedFile(file, getUploadKind("blob"))),
+    ).rejects.toBeInstanceOf(FileTooLargeError);
+  });
+
   test("formats structured uploadthing authorization errors for the UI", () => {
     expect(
       getUploadErrorMessage({
@@ -50,5 +61,14 @@ describe("uploads module", () => {
         },
       }),
     ).toBe("The upload route could not resolve a user identity.");
+  });
+
+  test("formats generic uploadthing size errors for the UI", () => {
+    expect(
+      getUploadErrorMessage({
+        message: "FileSizeMismatch: file size is too large",
+        data: undefined,
+      }),
+    ).toBe("The selected file exceeds this route's size limit.");
   });
 });

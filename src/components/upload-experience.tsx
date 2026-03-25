@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { Effect } from "effect-beta";
 import {
+  FileTooLargeError,
   formatFileSize,
   getUploadErrorMessage,
   type PendingUploadFile,
@@ -167,7 +168,9 @@ export function UploadPageContent({ kind }: { kind: UploadKind }) {
       setErrorMessage(
         error instanceof UnsupportedFileTypeError
           ? `This route only accepts ${kind.accept.toLowerCase()}.`
-          : "The upload could not be prepared.",
+          : error instanceof FileTooLargeError
+            ? `This route accepts files up to ${kind.maxFileSize}.`
+            : "The upload could not be prepared.",
       );
     }
   }
