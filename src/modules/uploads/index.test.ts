@@ -61,7 +61,6 @@ describe("uploads module", () => {
     expect(normalized.type).toBe("application/octet-stream");
     expect(normalized.lastModified).toBe(123);
   });
-
   test("formats structured uploadthing authorization errors for the UI", () => {
     expect(
       getUploadErrorMessage({

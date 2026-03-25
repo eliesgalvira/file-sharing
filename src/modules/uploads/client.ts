@@ -40,7 +40,6 @@ export const normalizeFileForUpload = (file: File, kind: UploadKind) => {
     lastModified: file.lastModified,
   });
 };
-
 const splitAcceptRules = (acceptAttr: string) =>
   acceptAttr
     .split(",")
