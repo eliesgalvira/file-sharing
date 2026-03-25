@@ -5,6 +5,7 @@ export {
   formatFileSize,
   getUploadErrorMessage,
   getRouteConfig,
+  normalizeFileForUpload,
   PendingUploadFile,
   UnsupportedFileTypeError,
   useUploadThing,

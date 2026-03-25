@@ -30,6 +30,16 @@ export class FileTooLargeError extends Schema.TaggedErrorClass("FileTooLargeErro
   },
 ) {}
 
+export const normalizeFileForUpload = (file: File, kind: UploadKind) => {
+  if (kind.fileType !== "blob" || file.type === "application/octet-stream") {
+    return file;
+  }
+
+  return new File([file], file.name, {
+    type: "application/octet-stream",
+    lastModified: file.lastModified,
+  });
+};
 const splitAcceptRules = (acceptAttr: string) =>
   acceptAttr
     .split(",")

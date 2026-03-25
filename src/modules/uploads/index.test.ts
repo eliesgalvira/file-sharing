@@ -6,6 +6,7 @@ import {
   formatFileSize,
   getUploadErrorMessage,
   getUploadKind,
+  normalizeFileForUpload,
   uploadKinds,
   validateSelectedFile,
 } from "./index";
@@ -47,6 +48,19 @@ describe("uploads module", () => {
     ).rejects.toBeInstanceOf(FileTooLargeError);
   });
 
+  test("normalizes blob uploads to application/octet-stream", () => {
+    const file = new File(["pcap"], "capture.pcapng", {
+      type: "application/x-pcapng",
+      lastModified: 123,
+    });
+
+    const normalized = normalizeFileForUpload(file, getUploadKind("blob"));
+
+    expect(normalized).not.toBe(file);
+    expect(normalized.name).toBe("capture.pcapng");
+    expect(normalized.type).toBe("application/octet-stream");
+    expect(normalized.lastModified).toBe(123);
+  });
   test("formats structured uploadthing authorization errors for the UI", () => {
     expect(
       getUploadErrorMessage({
