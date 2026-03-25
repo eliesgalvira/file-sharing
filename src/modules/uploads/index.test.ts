@@ -67,11 +67,13 @@ describe("uploads module", () => {
         message: "Failed to run middleware",
         data: {
           code: "FORBIDDEN",
+          message: "You must be signed in to upload files.",
           reason: "authorization",
           route: "image",
           fileKey: null,
           details: "The upload route could not resolve a user identity.",
           causeTag: "UploadAuthorizationError",
+          causeMessage: "UploadAuthorizationError",
         },
       }),
     ).toBe("The upload route could not resolve a user identity.");
@@ -84,5 +86,23 @@ describe("uploads module", () => {
         data: undefined,
       }),
     ).toBe("The selected file exceeds this route's size limit.");
+  });
+
+  test("formats opaque uploadthing provider errors with structured fallback details", () => {
+    expect(
+      getUploadErrorMessage({
+        message: "UPLOAD_FAILED",
+        data: {
+          code: "UPLOAD_FAILED",
+          message: "UploadThing could not store this file.",
+          reason: "internal",
+          route: "blob",
+          fileKey: null,
+          details: "File upload rejected by the upstream provider.",
+          causeTag: null,
+          causeMessage: "Possible malware or unsupported binary signature.",
+        },
+      }),
+    ).toBe("File upload rejected by the upstream provider.");
   });
 });

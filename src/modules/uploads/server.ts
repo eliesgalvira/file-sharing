@@ -23,11 +23,13 @@ class UploadCompletionError extends Schema.TaggedErrorClass("UploadCompletionErr
 
 export type UploadRouteErrorData = {
   readonly code: string;
+  readonly message: string | null;
   readonly reason: "authorization" | "completion" | "internal";
   readonly route: string | null;
   readonly fileKey: string | null;
   readonly details: string | null;
   readonly causeTag: string | null;
+  readonly causeMessage: string | null;
 };
 
 const isUploadRouteErrorData = (value: unknown): value is UploadRouteErrorData =>
@@ -42,14 +44,19 @@ const formatUploadErrorData = (error: UploadThingError): UploadRouteErrorData =>
 
   return {
     code: error.code,
+    message: error.message,
     reason: data?.reason ?? "internal",
     route: data?.route ?? null,
     fileKey: data?.fileKey ?? null,
-    details: data?.details ?? null,
+    details:
+      data?.details ??
+      (cause instanceof Error ? cause.message : typeof cause === "string" ? cause : null),
     causeTag:
       cause && typeof cause === "object" && "_tag" in cause && typeof cause._tag === "string"
         ? cause._tag
         : null,
+    causeMessage:
+      cause instanceof Error ? cause.message : typeof cause === "string" ? cause : null,
   };
 };
 
@@ -72,11 +79,13 @@ const toUploadThingError = (error: unknown): UploadThingError<UploadRouteErrorDa
           cause,
           data: {
             code: "FORBIDDEN",
+            message: "You must be signed in to upload files.",
             reason: "authorization",
             route: cause.route,
             fileKey: null,
             details: cause.details,
             causeTag: cause._tag,
+            causeMessage: cause.message,
           },
         }),
     ),
@@ -89,11 +98,13 @@ const toUploadThingError = (error: unknown): UploadThingError<UploadRouteErrorDa
           cause,
           data: {
             code: "UPLOAD_FAILED",
+            message: "The upload finished, but the server could not finalize it.",
             reason: "completion",
             route: cause.route,
             fileKey: cause.fileKey,
             details: cause.details,
             causeTag: cause._tag,
+            causeMessage: cause.message,
           },
         }),
     ),
@@ -105,6 +116,7 @@ const toUploadThingError = (error: unknown): UploadThingError<UploadRouteErrorDa
           cause,
           data: {
             code: "INTERNAL_SERVER_ERROR",
+            message: "An unexpected upload error occurred.",
             reason: "internal",
             route: null,
             fileKey: null,
@@ -113,6 +125,8 @@ const toUploadThingError = (error: unknown): UploadThingError<UploadRouteErrorDa
               cause && typeof cause === "object" && "_tag" in cause && typeof cause._tag === "string"
                 ? cause._tag
                 : null,
+            causeMessage:
+              cause instanceof Error ? cause.message : typeof cause === "string" ? cause : null,
           },
         }),
     ),
