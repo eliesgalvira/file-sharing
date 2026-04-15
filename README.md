@@ -6,7 +6,7 @@ Thanks to [uploadthing](https://uploadthing.com/).
   - Videos (up to 64MB)
   - Audio files (up to 4MB)
   - PDFs (up to 4MB)
-  - Text files (up to 64KB)
+  - Text files (up to 2MB)
   - Blob files (up to 8MB)
 
 ## Project Structure
